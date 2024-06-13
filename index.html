@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkir Gratis Bandung </title>
+    <link href="https://cdn.skypack.dev/ol/ol.css" rel="stylesheet">
+    <link rel="stylesheet" href="Skeleton-2.0.4/css/normalize.css">
+    <link rel="stylesheet" href="Skeleton-2.0.4/css/skeleton.css">
+</head>
+<body>
+    <form id="placeForm">
+        <div>
+            <label for="nama_tempat">Nama Tempat:</label>
+            <input type="text" id="nama_tempat" name="nama_tempat" required placeholder="Masukkan nama tempat parkir">
+        </div>
+        <div>
+            <label for="lokasi">Lokasi:</label>
+            <input type="text" id="lokasi" name="lokasi" required placeholder="Masukkan alamat tempat parkir">
+        </div>
+        <div>
+            <label for="fasilitas">Fasilitas:</label>
+            <input type="text" id="fasilitas" name="fasilitas" required placeholder="Contoh: CCTV, Toilet, Security">
+        </div>
+        <div>
+            <label for="koordinat">Koordinat:</label>
+            <input type="text" id="koordinat" name="koordinat" placeholder="Masukkan latitude, longitude" required>
+        </div>
+        <div>
+            <label for="gambar">Gambar:</label>
+            <input type="file" id="gambar" name="gambar" accept="gambar/*" placeholder="Unggah gambar tempat parkir">
+        </div>
+        <button type="submit">Tambah Tempat</button>
+    </form>
+    <div id="map"></div>
+   
+    <script type="module" src="javascript/main.js"></script>
+
+   
+</body>
+</html>
