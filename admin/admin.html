@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Tempat</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Data Tempat</h1>
+    <table id="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nama Tempat</th>
+          <th>Lokasi</th>
+          <th>Fasilitas</th>
+          <th>Longitude</th>
+          <th>Latitude</th>
+          <th>Gambar</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Data akan ditambahkan dinamis di sini -->
+      </tbody>
+    </table>
+
+    <h2>Tambah Data</h2>
+    <form id="add-form">
+      <input type="text" id="nama_tempat" placeholder="Nama_Tempat" required>
+      <input type="text" id="lokasi" placeholder="Lokasi" required>
+      <input type="text" id="fasilitas" placeholder="Fasilitas" required>
+      <input type="text" id="lon" placeholder="Longitude" required>
+      <input type="text" id="lat" placeholder="Latitude" required>
+      <input type="text" id="gambar" placeholder="Gambar" required>
+      <button type="submit">Tambah</button>
+    </form>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
