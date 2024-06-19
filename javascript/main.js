@@ -5,6 +5,14 @@ import OSM from 'https://cdn.skypack.dev/ol/source/OSM.js';
 import { fromLonLat } from 'https://cdn.skypack.dev/ol/proj.js';
 import { createMarker } from './controller/markers.js';
 import { createPopups, displayPopup } from './controller/popups.js';
+import {
+    setInner,
+    show,
+    hide,
+    getValue,
+    getFileSize,
+  } from "https://cdn.jsdelivr.net/gh/jscroot/element@0.0.6/croot.js";
+  import { postFile } from "https://cdn.jsdelivr.net/gh/jscroot/api@0.0.2/croot.js";
 
 const map = new Map({
     target: 'map',
@@ -105,59 +113,100 @@ map.on('click', function(event) {
     });
 });
 
-// Tambahkan event listener ke peta untuk menyembunyikan tabel saat peta diklik
-map.on('click', function() {
-    document.getElementById('placesTable').style.display = 'none';
-});
 
-// Fungsi untuk menangani pengiriman form dan menyimpan data ke database
-document.getElementById('parkingForm').addEventListener('submit', function(event) {
+
+document.getElementById('placeForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    
-    const formData = {
-        nama_tempat: document.getElementById('nama_tempat').value,
-        lokasi: document.getElementById('lokasi').value,
-        fasilitas: document.getElementById('fasilitas').value,
-        lon: parseFloat(document.getElementById('lon').value),
-        lat: parseFloat(document.getElementById('lat').value),
-        gambar: document.getElementById('gambar').value
-    };
 
-    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/tempat-parkir', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.Response);
-    })
-    .catch(error => {
+    // Mengambil data dari form
+    const placeName = getValue('placeName');
+    const location = getValue('location');
+    const facilities = getValue('facilities');
+    const coordinates = getValue('coordinates').split(',').map(Number);
+    const image = document.getElementById('image').files[0];
+
+    // Membuat objek FormData untuk mengirim data termasuk file gambar
+    const formData = new FormData();
+    formData.append('nama_tempat', placeName);
+    formData.append('lokasi', location);
+    formData.append('fasilitas', facilities);
+    formData.append('lon', coordinates[1]);
+    formData.append('lat', coordinates[0]);
+    formData.append('gambar', image);
+
+    // Mengubah gambar menjadi string base64 sebelum mengirim
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const imgBase64 = event.target.result;
+        formData.set('gambar', imgBase64); // Menyimpan gambar sebagai string base64 dalam formData
+
+        // Mengirim data tempat parkir ke server menggunakan fetch
+        fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/tempat-parkir', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Gagal mengirim data ke server');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.Response) {
+                alert(data.Response);
+            } else {
+                alert('Tempat parkir berhasil disimpan!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menyimpan data tempat parkir.');
+        });
+    };
+    reader.onerror = function(error) {
         console.error('Error:', error);
-    });
-});
-
-document.getElementById('coordinatesForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const formData = {
-        markers: JSON.parse(document.getElementById('markers').value)
+        alert('Gagal membaca file gambar.');
     };
-
+    reader.readAsDataURL(image); // Membaca file gambar sebagai Data URL
+    
+    // Mengirim data koordinat ke server menggunakan fetch
     fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/koordinat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(koordinatData)
     })
     .then(response => response.json())
     .then(data => {
-        alert(data);
+        if (data.Response) {
+            alert(data.Response);
+        } else {
+            alert('Koordinat berhasil disimpan!');
+        }
     })
     .catch(error => {
         console.error('Error:', error);
+        alert('Terjadi kesalahan saat menyimpan data koordinat.');
     });
+
+    // Menyimpan fungsi uploadImage ke dalam objek window agar dapat diakses secara global
+    window.uploadImage = uploadImage;
+
+    // URL target untuk mengirim file gambar
+    const target_url = "https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/upload/img";
+
+    // Fungsi untuk mengunggah gambar
+    function uploadImage() {
+        // Memeriksa apakah file gambar telah dipilih
+        if (!getValue("imageInput")) {
+            alert("Silakan pilih file gambar");
+            return;
+        }
+        // Menyembunyikan input file selama proses unggah
+        hide("inputfile");             
+        // Mengirim file gambar ke server
+        postFile(target_url, "image");
+    }
+
 });
