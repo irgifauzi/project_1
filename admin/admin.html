@@ -1,44 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Tempat</title>
-  <link rel="stylesheet" href="admin.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempat Parkir Management</title>
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Data Tempat</h1>
-    <table id="data-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nama Tempat</th>
-          <th>Lokasi</th>
-          <th>Fasilitas</th>
-          <th>Longitude</th>
-          <th>Latitude</th>
-          <th>Gambar</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-        <!-- Data akan ditambahkan dinamis di sini -->
-      </tbody>
+
+     <!-- Table to display data -->
+     <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama Tempat</th>
+                <th>Lokasi</th>
+                <th>Fasilitas</th>
+                <th>Longitude</th>
+                <th>Latitude</th>
+                <th>Gambar</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- Data will be inserted here dynamically -->
+        </tbody>
     </table>
 
-    <h2>Tambah Data</h2>
-    <form id="add-form">
-      <input type="text" id="nama_tempat" placeholder="Nama_Tempat" required>
-      <input type="text" id="lokasi" placeholder="Lokasi" required>
-      <input type="text" id="fasilitas" placeholder="Fasilitas" required>
-      <input type="text" id="lon" placeholder="Longitude" required>
-      <input type="text" id="lat" placeholder="Latitude" required>
-      <input type="text" id="gambar" placeholder="Gambar" required>
-      <button type="submit">Tambah</button>
-    </form>
-  </div>
 
-  <script src="admin.js"></script>
+    <form id="placeForm">
+        <div>
+            <label for="nama_tempat">Nama Tempat:</label>
+            <input type="text" id="nama_tempat" name="nama_tempat" required placeholder="Masukkan nama tempat parkir">
+           
+        </div>
+        <div>
+            <label for="lokasi">Lokasi:</label>
+            <input type="text" id="lokasi" name="lokasi" required placeholder="Masukkan alamat tempat parkir">
+        </div>
+        <div>
+            <label for="fasilitas">Fasilitas:</label>
+            <input type="text" id="fasilitas" name="fasilitas" required placeholder="Contoh: CCTV, Toilet, Security">
+        </div>
+        <div>
+            <label for="koordinat">Lon:</label>
+            <input type="text" id="koordinat" name="lon" placeholder="Masukkan latitude, longitude" required>
+        <div>
+           <label for="koordinat">Lat:</label>
+            <input type="text" id="koordinat" name="lat" placeholder="Masukkan latitude, longitude" required>
+        </div>
+        <div>
+            <label for="gambar">Gambar:</label>
+            <input type="file" id="gambar" name="gambar" accept="gambar/*" placeholder="Unggah gambar tempat parkir">
+        </div>
+        <button type="submit">Tambah Tempat</button>
+    </form>
+        
+       
+    </div>
+
+    <script src="admin.js"></script>
 </body>
 </html>
