@@ -1,72 +1,115 @@
-document.addEventListener('DOMContentLoaded', function() {
-    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/data/lokasi')  // Ganti 'data.json' dengan path sesuai dengan lokasi file JSON Anda
+document.addEventListener('DOMContentLoaded', function () {
+    const dataDisplayTable = document.getElementById('dataDisplayTable').getElementsByTagName('tbody')[0];
+
+    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/data/lokasi')
         .then(response => response.json())
         .then(data => {
-            const dataBody = document.getElementById('dataBody');
             data.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item._id}</td>
-                    <td>${item.nama_tempat}</td>
-                    <td>${item.lokasi}</td>
-                    <td>${item.fasilitas}</td>
-                    <td>${item.lon}</td>
-                    <td>${item.lat}</td>
-                    <td>${item.gambar}</td>
+                const row = dataDisplayTable.insertRow();
+                row.insertCell(0).textContent = item.nama_tempat;
+                row.insertCell(1).textContent = item.lokasi;
+                row.insertCell(2).textContent = item.fasilitas;
+                row.insertCell(3).textContent = `${item.lon}, ${item.lat}`;
+                
+                const actionsCell = row.insertCell(4);
+                actionsCell.innerHTML = `
+                    <button type="button" onclick="showUpdateForm('${item._id}', '${item.nama_tempat}', '${item.lokasi}', '${item.fasilitas}', ${item.lon}, ${item.lat})">Update</button>
+                    <button type="button" onclick="deleteData('${item._id}', this)">Hapus</button>
                 `;
-                dataBody.appendChild(row);
             });
         })
-        .catch(error => console.error('Error fetching data:', error));
-});
-// Fungsi untuk menangani pengiriman form dan menyimpan data ke database
-document.getElementById('parkingForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const formData = {
-        nama_tempat: document.getElementById('nama_tempat').value,
-        lokasi: document.getElementById('lokasi').value,
-        fasilitas: document.getElementById('fasilitas').value,
-        lon: parseFloat(document.getElementById('lon').value),
-        lat: parseFloat(document.getElementById('lat').value),
-        gambar: document.getElementById('gambar').value
-    };
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
 
-    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/tempat-parkir', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.Response);
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    // Handle modal close button
+    const modal = document.getElementById('updateModal');
+    const span = document.getElementsByClassName('close')[0];
+    span.onclick = function () {
+        modal.style.display = 'none';
+    }
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Handle update form submission
+    document.getElementById('updateForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const id = document.getElementById('updateId').value;
+        const updatedData = {
+            _id: id,
+            nama_tempat: document.getElementById('namaTempat').value,
+            lokasi: document.getElementById('lokasi').value,
+            fasilitas: document.getElementById('fasilitas').value,
+            lon: parseFloat(document.getElementById('lon').value),
+            lat: parseFloat(document.getElementById('lat').value)
+        };
+
+        fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/data/tempat', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+            if (status === 200) {
+                alert('Data updated successfully');
+                modal.style.display = 'none';
+                location.reload(); // Refresh the page to reflect changes
+            } else {
+                alert(`Error updating data: ${body.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating data:', error);
+        });
     });
 });
 
-document.getElementById('coordinatesForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    const formData = {
-        markers: JSON.parse(document.getElementById('markers').value)
-    };
+window.showUpdateForm = function(id, namaTempat, lokasi, fasilitas, lon, lat) {
+    const modal = document.getElementById('updateModal');
+    modal.style.display = 'block';
 
-    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/koordinat', {
-        method: 'POST',
+    document.getElementById('updateId').value = id;
+    document.getElementById('namaTempat').value = namaTempat;
+    document.getElementById('lokasi').value = lokasi;
+    document.getElementById('fasilitas').value = fasilitas;
+    document.getElementById('lon').value = lon;
+    document.getElementById('lat').value = lat;
+}
+
+
+window.deleteData = function(id, button) {
+    const confirmation = confirm('Are you sure you want to delete this data?');
+    if (!confirmation) {
+        return;
+    }
+
+    console.log(`Deleting item with ID: ${id}`);  // Debugging statement
+
+    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/data/tempat', {
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ id: id })
     })
-    .then(response => response.json())
-    .then(data => {
-        alert(data);
+    .then(response => response.json().then(data => ({ status: response.status, body: data })))
+    .then(({ status, body }) => {
+        if (status === 200) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            alert('Data deleted successfully');
+        } else {
+            alert(`Error deleting data: ${body.message}`);
+            console.error(`Error deleting data: ${body.message}`);
+        }
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.error('Error deleting data:', error);
     });
-});
+}

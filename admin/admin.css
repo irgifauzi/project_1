@@ -1,80 +1,66 @@
-/* Reset default margin and padding */
-body, h1, h2, h3, p, ul, ol, li, table, tr, th, td, form, input, button {
-    margin: 0;
-    padding: 0;
-}
-
-/* Basic styling for the body */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f0f0f0;
-    padding: 20px;
-}
-
-/* Styling for the table */
-table {
-    width: 100%;
+/* Styling for the data display table */
+#dataDisplayTable {
     border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-top: 20px;
 }
 
-table th, table td {
-    padding: 10px;
+#dataDisplayTable th, #dataDisplayTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
     text-align: left;
 }
 
-table th {
+#dataDisplayTable th {
     background-color: #f2f2f2;
 }
 
-/* Form styling */
-form {
-    background-color: #fff;
+#dataDisplayTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#dataDisplayTable tbody tr:hover {
+    background-color: #ddd;
+}
+
+/* Styling for modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
+    border: 1px solid #888;
+    width: 80%;
 }
 
-form label {
-    display: block;
-    margin-bottom: 8px;
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-form input[type="text"], form input[type="file"] {
-    width: calc(100% - 12px);
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-form input[type="text"]:focus, form input[type="file"]:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-form button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
 }
-
-form button:hover {
-    background-color: #0056b3;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    form input[type="text"], form input[type="file"] {
-        width: 100%;
-    }
+h1 {
+    text-align: center;
+    margin-top: 20px; /* Atur margin atas sesuai kebutuhan */
+  
 }

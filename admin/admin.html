@@ -3,61 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tempat Parkir Management</title>
+    <title>Parkir Gratis Bandung</title>
+    <link href="https://cdn.skypack.dev/ol/ol.css" rel="stylesheet">
+    <link rel="stylesheet" href="../Skeleton-2.0.4/css/normalize.css">
+    <link rel="stylesheet" href="../Skeleton-2.0.4/css/skeleton.css">
     <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-
-     <!-- Table to display data -->
-     <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nama Tempat</th>
-                <th>Lokasi</th>
-                <th>Fasilitas</th>
-                <th>Longitude</th>
-                <th>Latitude</th>
-                <th>Gambar</th>
-            </tr>
-        </thead>
-        <tbody id="dataBody">
-            <!-- Data will be inserted here dynamically -->
-        </tbody>
-    </table>
-
-
-    <form id="placeForm">
-        <div>
-            <label for="nama_tempat">Nama Tempat:</label>
-            <input type="text" id="nama_tempat" name="nama_tempat" required placeholder="Masukkan nama tempat parkir">
-           
-        </div>
-        <div>
-            <label for="lokasi">Lokasi:</label>
-            <input type="text" id="lokasi" name="lokasi" required placeholder="Masukkan alamat tempat parkir">
-        </div>
-        <div>
-            <label for="fasilitas">Fasilitas:</label>
-            <input type="text" id="fasilitas" name="fasilitas" required placeholder="Contoh: CCTV, Toilet, Security">
-        </div>
-        <div>
-            <label for="koordinat">Lon:</label>
-            <input type="text" id="koordinat" name="lon" placeholder="Masukkan latitude, longitude" required>
-        <div>
-           <label for="koordinat">Lat:</label>
-            <input type="text" id="koordinat" name="lat" placeholder="Masukkan latitude, longitude" required>
-        </div>
-        <div>
-            <label for="gambar">Gambar:</label>
-            <input type="file" id="gambar" name="gambar" accept="gambar/*" placeholder="Unggah gambar tempat parkir">
-        </div>
-        <button type="submit">Tambah Tempat</button>
-    </form>
+   
+    <form id="displayDataForm" class="form-style">
+        <!-- Tabel untuk menampilkan data -->
         
-       
+            <h1>HALAMAN ADMIN</h1>
+            <div class="scrollable-table">
+                <a href="../index.html" class="button-user">
+                    <button type="button">User Page</button>
+                </a>
+            <table id="dataDisplayTable" style="width:100%; margin-top:20px;">
+                <thead>
+                    <!-- Header tabel yang menunjukkan informasi yang akan ditampilkan -->
+                    <tr>
+                        <th>Nama Tempat</th>
+                        <th>Lokasi</th>
+                        <th>Fasilitas</th>
+                        <th>Koordinat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Tempat di mana data akan dimuat -->
+                </tbody>
+            </table>
+        </div>
+    </form>
+    
+   
+
+    <!-- Modal form -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="updateForm">
+                <label for="namaTempat">Nama Tempat:</label>
+                <input type="text" id="namaTempat" name="namaTempat">
+                <label for="lokasi">Lokasi:</label>
+                <input type="text" id="lokasi" name="lokasi">
+                <label for="fasilitas">Fasilitas:</label>
+                <input type="text" id="fasilitas" name="fasilitas">
+                <label for="lon">Longitude:</label>
+                <input type="text" id="lon" name="lon">
+                <label for="lat">Latitude:</label>
+                <input type="text" id="lat" name="lat">
+                <input type="hidden" id="updateId" name="updateId">
+                <button type="submit">Update</button>
+            </form>
+        </div>
     </div>
 
-    <script src="admin.js"></script>
+    <script type="module" src="admin.js"></script>
 </body>
 </html>

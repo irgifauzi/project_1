@@ -113,100 +113,70 @@ map.on('click', function(event) {
     });
 });
 
-
-
 document.getElementById('placeForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
     // Mengambil data dari form
-    const placeName = getValue('placeName');
-    const location = getValue('location');
-    const facilities = getValue('facilities');
-    const coordinates = getValue('coordinates').split(',').map(Number);
-    const image = document.getElementById('image').files[0];
+    const placeName = document.getElementById('placeName').value;
+    const location = document.getElementById('location').value;
+    const facilities = document.getElementById('facilities').value;
+    const coordinates = document.getElementById('coordinates').value.split(',').map(Number);
+    const image = document.getElementById('image').files[0].name; // Mengambil hanya nama file
 
-    // Membuat objek FormData untuk mengirim data termasuk file gambar
-    const formData = new FormData();
-    formData.append('nama_tempat', placeName);
-    formData.append('lokasi', location);
-    formData.append('fasilitas', facilities);
-    formData.append('lon', coordinates[1]);
-    formData.append('lat', coordinates[0]);
-    formData.append('gambar', image);
-
-    // Mengubah gambar menjadi string base64 sebelum mengirim
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const imgBase64 = event.target.result;
-        formData.set('gambar', imgBase64); // Menyimpan gambar sebagai string base64 dalam formData
-
-        // Mengirim data tempat parkir ke server menggunakan fetch
-        fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/tempat-parkir', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Gagal mengirim data ke server');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.Response) {
-                alert(data.Response);
-            } else {
-                alert('Tempat parkir berhasil disimpan!');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menyimpan data tempat parkir.');
-        });
+    // Membuat objek untuk dikirim sebagai JSON
+    const data = {
+        nama_tempat: placeName,
+        lokasi: location,
+        fasilitas: facilities,
+        lon: coordinates[1],
+        lat: coordinates[0],
+        gambar: image
     };
-    reader.onerror = function(error) {
-        console.error('Error:', error);
-        alert('Gagal membaca file gambar.');
-    };
-    reader.readAsDataURL(image); // Membaca file gambar sebagai Data URL
-    
-    // Mengirim data koordinat ke server menggunakan fetch
-    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/koordinat', {
+
+    // Mengirim data ke server menggunakan fetch dengan body berformat JSON
+    fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/tempat-parkir', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(koordinatData)
+        body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
-        if (data.Response) {
-            alert(data.Response);
+        if (data.success) {
+            alert('Data berhasil disimpan!');
+            // Menambahkan koordinat ke database
+            tambahKoordinatKeDatabase(coordinates);
         } else {
-            alert('Koordinat berhasil disimpan!');
+            alert('Berhasil Menyimpan Data');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat menyimpan data koordinat.');
+        alert('Terjadi kesalahan saat mengirim data.');
     });
 
-    // Menyimpan fungsi uploadImage ke dalam objek window agar dapat diakses secara global
-    window.uploadImage = uploadImage;
+    // Prepare coordinates data for koordinat endpoint
+    const coordData = {
+        markers: [
+            [coordinates[0], coordinates[1]]
+        ]
+    };
 
-    // URL target untuk mengirim file gambar
-    const target_url = "https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/upload/img";
-
-    // Fungsi untuk mengunggah gambar
-    function uploadImage() {
-        // Memeriksa apakah file gambar telah dipilih
-        if (!getValue("imageInput")) {
-            alert("Silakan pilih file gambar");
-            return;
-        }
-        // Menyembunyikan input file selama proses unggah
-        hide("inputfile");             
-        // Mengirim file gambar ke server
-        postFile(target_url, "image");
-    }
-
-});
+        fetch('https://asia-southeast2-fit-union-424704-a6.cloudfunctions.net/parkirgratisbackend/koordinat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(coordData)
+        });
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Coordinates saved successfully:', data);
+        alert('Coordinates added successfully!');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to add place or save coordinates!');
+    });
